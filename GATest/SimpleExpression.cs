@@ -16,19 +16,37 @@ namespace GATest
             // If all characters in the input string match valid mathematical expression characters then all is fine
             if(expression.All(a => allowedChars.Any(b => a == b))) 
             {
-                var sb = new StringBuilder();
-
-                foreach (char item in expression)
-                {
-                    sb.Append(item + " ");
-                }
-
-                Text = sb.ToString();
+                Text = GenerateValidExpression(expression);
             }
             else
             {
                 throw new Exception("Expression string contained illegal characters");
             }
+        }
+
+        private string GenerateValidExpression(string rawExpr)
+        {
+            char[] numbers = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            char[] operators = new char[] { '+', '-', '*', '/' };
+
+            var sb = new StringBuilder();
+            char prev = '\0';
+
+            foreach (char current in rawExpr)
+            {
+                if (numbers.Any(num => num != prev))
+                {
+                    sb.Append(current + " ");
+                }
+                else if(operators.Any(op => op == current))
+                {
+                    sb.Append(current + " ");
+                }
+
+                prev = current;
+            }
+
+            return sb.ToString();
         }
 
         private int EvaluateTerms(int term, char op, int term2)
@@ -68,6 +86,11 @@ namespace GATest
         public override string ToString()
         {
             return Text;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Text.Equals(((SimpleExpression)obj).Text);
         }
     }
 }

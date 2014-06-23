@@ -25,6 +25,16 @@ namespace GATest
             return string.Format("Generation: {0}, Expression: {1}", Generation, Sequence.Text);
         }
 
+        public override bool Equals(object obj)
+        {
+            var compareObj = (Chromosome)obj;
+
+            bool compareGen = this.Generation == compareObj.Generation;
+            bool compareSeq = this.Sequence.Equals(compareObj.Sequence);
+
+            return (compareGen && compareSeq) ? true : false;
+        }
+
         public string ToBinaryString()
         {
             StringBuilder sb = new StringBuilder();

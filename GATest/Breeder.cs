@@ -52,14 +52,18 @@ namespace GATest
         private Chromosome[] CrossOver(Chromosome a, Chromosome b)
         {
             var crossed = new Chromosome[2];
-            string binaryStr1 = BinaryTranslator.ToBinaryString(a);
+            string binaryStr = BinaryTranslator.ToBinaryString(a);
             string binaryStr2 = BinaryTranslator.ToBinaryString(b);
 
-            int cutOffAt = rng.Next(binaryStr1.Length);
-            string crossedBinaryStr = binaryStr1.Substring(0, cutOffAt) + binaryStr2.Substring(cutOffAt);
-            string crossedBinaryStr2 = binaryStr2.Substring(0, cutOffAt) + binaryStr1.Substring(cutOffAt);
-            //TODO: finish this
-            return null;
+            int cutOffAt = rng.Next(binaryStr.Length);
+            //int cutOffAt = 8; THIS IS FOR UNIT TESTING ONLY
+            string crossedBinaryStr = binaryStr.Substring(0, cutOffAt) + binaryStr2.Substring(cutOffAt);
+            string crossedBinaryStr2 = binaryStr2.Substring(0, cutOffAt) + binaryStr.Substring(cutOffAt);
+
+            crossed[0] = BinaryTranslator.ToChrosomosome(crossedBinaryStr);
+            crossed[1] = BinaryTranslator.ToChrosomosome(crossedBinaryStr2);
+            
+            return crossed;
         }
 
         private Chromosome Mutate(Chromosome a)

@@ -59,7 +59,7 @@ namespace GATest
             for (int i = 0; i < binaryStr.Length; i += 4)
             {
                 string subStr = binaryStr.Substring(i, 4);
-                sb.Append(translationTable.First(entry => entry.Value.Equals(subStr)).Key);
+                sb.Append(translationTable.FirstOrDefault(entry => entry.Value.Equals(subStr)).Key);
             }
 
             return new Chromosome(0, sb.ToString());
