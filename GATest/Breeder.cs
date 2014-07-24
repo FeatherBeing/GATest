@@ -8,45 +8,56 @@ namespace GATest
 {
     public class Breeder
     {
-        const int POPULATION_SIZE = 100; // Defines how many chrosomes to breed initially
-        const int MAX_TERMS = 8; // Defines maximum amount of terms in a supplied expression
-        const int MUTATION_RATE = 1;
-        const int CROSSOVER_RATE = 1;
+        const int POPULATION_SIZE = 100; // Defines how many chrosomes to breed per generation
+        const int SEQUENCE_LENGTH = 9; // Defines maximum amount of terms in a supplied expression
+        const float MUTATION_RATE = 0.07f;
+        const float CROSSOVER_RATE = 10;
         private static Random rng = new Random();
         private int generationCtr = 1;
 
         public Chromosome[] GenerateInitialChromosomes()
         {
             var chromosomes = new Chromosome[POPULATION_SIZE];
+            var rng = new Random();
 
             for (int i = 0; i < POPULATION_SIZE; i++)
             {
-                chromosomes[i] = new Chromosome(generationCtr, GetRandomExpression());
+                chromosomes[i] = new Chromosome(generationCtr, SimpleExpression.Random(SEQUENCE_LENGTH, rng));
             }
 
             return chromosomes;
         }
 
-        public Chromosome[] CreateGenerationFrom(Chromosome[] inGen, Func<SimpleExpression, int> fitnessFunc)
+        public Chromosome[] CreateGenerationFrom(Stack<Chromosome> inGen)
         {
-            int popCount = inGen.Length;
-            inGen.Select(c => c.Fitness = fitnessFunc(c.Sequence));
+            var outGen = new HashSet<Chromosome>();
 
             // Select two chromosomes to cross using roulette wheel selection
-            var rouletteNums = new Tuple<Chromosome, int>[inGen.Length];
+            var rouletteNums = Enumerable.Range(0, inGen.Count)
+                .Select(n => Tuple.Create(inGen.ElementAt(n), inGen.ElementAt(n).Fitness))
+                .ToArray();            
+            var rouletteWheel = new RouletteWheel(RouletteWheel.RouletteNumber.CreateRange(rouletteNums));
 
-            for (int i = 0; i < inGen.Length; i++)
+            while (outGen.Count < POPULATION_SIZE)
             {
-                rouletteNums[i] = Tuple.Create(inGen[i], inGen[i].Fitness);
+                Chromosome a = rouletteWheel.Spin();
+                Chromosome b = rouletteWheel.Spin();
+
+                if (rng.Next(100) < CROSSOVER_RATE)
+                {
+                    var crossedPair = CrossOver(a, b);
+                    crossedPair[0] = Mutate(crossedPair[0]);
+                    crossedPair[1] = Mutate(crossedPair[1]);
+                    outGen.Add(crossedPair[0]);
+                    outGen.Add(crossedPair[1]);
+                }
+                else // If we're not going to cross anything then we can just set it to the same reference
+                {
+                    outGen.Add(inGen.Pop());
+                }
             }
 
-            var rouletteWheel = new RouletteWheel<Chromosome>(RouletteNumber<Chromosome>.CreateRange(rouletteNums));
-            Chromosome a = rouletteWheel.Spin();
-            Chromosome b = rouletteWheel.Spin();
-
-
-
-            return null;
+            return outGen.ToArray();
         }
 
         private Chromosome[] CrossOver(Chromosome a, Chromosome b)
@@ -55,7 +66,7 @@ namespace GATest
             string binaryStr = BinaryTranslator.ToBinaryString(a);
             string binaryStr2 = BinaryTranslator.ToBinaryString(b);
 
-            int cutOffAt = rng.Next(binaryStr.Length);
+            int cutOffAt = rng.Next(1, binaryStr.Length);
             //int cutOffAt = 8; THIS IS FOR UNIT TESTING ONLY
             string crossedBinaryStr = binaryStr.Substring(0, cutOffAt) + binaryStr2.Substring(cutOffAt);
             string crossedBinaryStr2 = binaryStr2.Substring(0, cutOffAt) + binaryStr.Substring(cutOffAt);
@@ -68,37 +79,18 @@ namespace GATest
 
         private Chromosome Mutate(Chromosome a)
         {
-            //TODO: finish this 
-            return null;
-        }
+            var mutatedExpr = BinaryTranslator.ToBinaryString(a).ToCharArray();
+            var flipBits = new Func<char, char>(bit => char.GetNumericValue(bit) != 0 ? '0' : '1'); 
 
-        private string GetRandomExpression()
-        {
-            var sb = new StringBuilder();
-            char[] allowedNumbers = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-            char[] allowedOperators = new char[] { '+', '-', '*', '/' };
-            int terms = rng.Next(2, MAX_TERMS);
-
-            if (terms % 2 == 0)
+            for (int i = 0; i < mutatedExpr.Length; i++)
             {
-                terms++;
-            }
-
-            for (int i = 0; i < terms; i++)
-            {
-                if (i % 2 == 0)
+                if (rng.NextDouble() < MUTATION_RATE)
                 {
-                    // Append Number
-                    sb.Append(allowedNumbers[rng.Next(allowedNumbers.Length)]);
-                }
-                else
-                {
-                    // Append operator
-                    sb.Append(allowedOperators[rng.Next(allowedOperators.Length)]);
+                    mutatedExpr[i] = flipBits(mutatedExpr[i]);
                 }
             }
 
-            return sb.ToString();
+            return BinaryTranslator.ToChrosomosome(new string(mutatedExpr));
         }
     }
 }

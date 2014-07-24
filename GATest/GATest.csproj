@@ -44,7 +44,6 @@
     <Compile Include="BinaryTranslator.cs" />
     <Compile Include="Chromosome.cs" />
     <Compile Include="Breeder.cs" />
-    <Compile Include="ChromosomeBank.cs" />
     <Compile Include="GeneticSolver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,24 +8,25 @@ namespace GATest
 {
     public class GeneticSolver
     {
-        private Func<SimpleExpression, int> fitnessFunc;
+        private Stack<Chromosome> currentGen;
+        private readonly Breeder breeder;
 
-        public GeneticSolver(Func<SimpleExpression, int> fitnessCalc)
+        public GeneticSolver()
         {
-            fitnessFunc = fitnessCalc;
+            breeder = new Breeder();
+            currentGen = new Stack<Chromosome>(breeder.GenerateInitialChromosomes());
         }
 
-        public void GenerateSolution(int targetNumber) 
+        public void GenerateSolution(double targetNumber) 
         {
-            var bank = new ChromosomeBank();
-            Chromosome[] currentGen;
-
-            do
+            while (!currentGen.Any(chromosome => chromosome.Fitness == 100))
             {
-                currentGen = bank.GetLatestGeneration();
-                bank.AddGeneration(bank.Breeder.CreateGenerationFrom(currentGen, fitnessFunc));
-                
-            } while (!currentGen.Any(chromosome => chromosome.Fitness == 100));
+                currentGen = new Stack<Chromosome>(breeder.CreateGenerationFrom(currentGen));
+            }
+
+            var solution = currentGen.First(c => c.Fitness == 100);
+
+            Console.WriteLine("Solution found!\nGeneration: {0}\nExpression: {1}", solution.Generation, solution.Sequence);
         }
     }
 }

@@ -11,19 +11,14 @@ namespace GATest
     // The operators will be applied sequentially from left to right as you read.
     class Program
     {
-        static Random RNG = new Random();
+        // Number to generate sequence for
+        private const int TARGET_NUMBER = 24;
 
+     
         static void Main(string[] args)
         {
-            var binaryStr = BinaryTranslator.ToBinaryString(new Chromosome(0, "1 + 1"));
-            var binaryStr2 = BinaryTranslator.ToBinaryString(new Chromosome(0, "2 + 2"));
-            Console.WriteLine("Binary Sequence: {0}", binaryStr);
-            Console.WriteLine("Binary Sequence: {0}", binaryStr2);
-            //Console.WriteLine("Translated Sequence: {0}", BinaryTranslator.ToChrosomosome(binaryStr).Sequence.Text);
-            Console.ReadKey();
-
-            //var breeder = new Breeder();
-            //var somes = breeder.GenerateInitialChromosomes();
+            var genSolver = new GeneticSolver();
+            genSolver.GenerateSolution(TARGET_NUMBER);
         }
     }
 }
