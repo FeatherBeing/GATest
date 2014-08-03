@@ -13,7 +13,6 @@ namespace GATest
         const float MUTATION_RATE = 0.07f;
         const float CROSSOVER_RATE = 10;
         private static Random rng = new Random();
-        private int generationCtr = 1;
 
         public Chromosome[] GenerateInitialChromosomes()
         {
@@ -22,7 +21,8 @@ namespace GATest
 
             for (int i = 0; i < POPULATION_SIZE; i++)
             {
-                chromosomes[i] = new Chromosome(generationCtr, SimpleExpression.Random(SEQUENCE_LENGTH, rng));
+                chromosomes[i] = ChromosomeFactory.CreateChromosome(StringExpression.Random(SEQUENCE_LENGTH, rng));
+                    //new Chromosome(generationCtr, StringExpression.Random(SEQUENCE_LENGTH, rng));
             }
 
             return chromosomes;
@@ -56,7 +56,8 @@ namespace GATest
                     outGen.Add(inGen.Pop());
                 }
             }
-
+            // Since we've created a new generation successfully now, add this to generation counter
+            ChromosomeFactory.SetNewGeneration();
             return outGen.ToArray();
         }
 

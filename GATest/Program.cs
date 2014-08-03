@@ -12,13 +12,14 @@ namespace GATest
     class Program
     {
         // Number to generate sequence for
-        private const int TARGET_NUMBER = 24;
+        public const int TARGET_NUMBER = 24;
 
      
         static void Main(string[] args)
         {
             var genSolver = new GeneticSolver();
             genSolver.GenerateSolution(TARGET_NUMBER);
+            Console.ReadKey();
         }
     }
 }

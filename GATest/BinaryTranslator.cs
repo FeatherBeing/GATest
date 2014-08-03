@@ -62,7 +62,8 @@ namespace GATest
                 sb.Append(translationTable.FirstOrDefault(entry => entry.Value.Equals(subStr)).Key);
             }
 
-            return new Chromosome(0, sb.ToString());
+            return ChromosomeFactory.CreateChromosome(sb.ToString()); 
+                //new Chromosome(0, sb.ToString());
         }
     }
 }

@@ -13,7 +13,7 @@ namespace GA_UnitTests
             string input = "2 2 + 2";
             string expected = "2 + 2 ";
 
-            var simpleExpr = new SimpleExpression(input);
+            var simpleExpr = new StringExpression(input);
             var actual = simpleExpr.Text;
 
             Assert.AreEqual(expected, actual);
@@ -25,7 +25,7 @@ namespace GA_UnitTests
             string input = "5 2 + 2";
             string expected = "5 + 2 ";
 
-            var simpleExpr = new SimpleExpression(input);
+            var simpleExpr = new StringExpression(input);
             var actual = simpleExpr.Text;
 
             Assert.AreEqual(expected, actual);

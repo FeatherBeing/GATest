@@ -32,7 +32,7 @@ namespace GATest
             {
                 foreach (var entry in numbers)
                 {
-                    if (Math.Min(entry.Size, size * 0.9f) > rng.Next(size + 1))
+                    if (Math.Min(entry.Slice, size * 0.9f) > rng.Next(size + 1))
                     {
                         return entry.Number;
                     }
@@ -43,15 +43,15 @@ namespace GATest
         public class RouletteNumber
         {
             public readonly Chromosome Number;
-            public readonly int Size;
+            public readonly double Slice; // Determines how much "space" this number will occupy relative to the size of the wheel
 
-            public RouletteNumber(Chromosome number, int size)
+            public RouletteNumber(Chromosome number, double slice)
             {
                 this.Number = number;
-                this.Size = size;
+                this.Slice = slice;
             }
 
-            public static RouletteNumber[] CreateRange(Tuple<Chromosome, int>[] entries)
+            public static RouletteNumber[] CreateRange(Tuple<Chromosome, double>[] entries)
             {
                 var rouletteNumbers = new RouletteNumber[entries.Length];
 
@@ -61,6 +61,11 @@ namespace GATest
                 }
 
                 return rouletteNumbers;
+            }
+
+            public override string ToString()
+            {
+                return string.Format("SIZE: {0}, EXPRESSION: {1}", this.Slice, this.Number.ToString());
             }
         }
     }

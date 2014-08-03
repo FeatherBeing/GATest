@@ -44,12 +44,12 @@
     <Compile Include="BinaryTranslator.cs" />
     <Compile Include="Chromosome.cs" />
     <Compile Include="Breeder.cs" />
+    <Compile Include="ChromosomeFactory.cs" />
     <Compile Include="GeneticSolver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RouletteNumber.cs" />
     <Compile Include="RouletteWheel.cs" />
-    <Compile Include="SimpleExpression.cs" />
+    <Compile Include="StringExpression.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

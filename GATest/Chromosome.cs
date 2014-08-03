@@ -9,26 +9,35 @@ namespace GATest
 {       
     public class Chromosome
     {
-        public readonly SimpleExpression Sequence;
+        public readonly StringExpression Sequence;
         public readonly int Generation;
-        public readonly int Fitness;
+        public readonly double Fitness;
         public bool DoCross { get; set; }
-        public static Func<Chromosome, int> CalculateFitness;
+        public static Func<Chromosome, double> CalculateFitness;
 
         static Chromosome()
         {
-            // TODO: Implement this
-            CalculateFitness = new Func<Chromosome,int>(a => 1);
+            CalculateFitness = new Func<Chromosome,double>(a => 
+            {
+                try
+                {
+                    return Math.Round(1/(Program.TARGET_NUMBER - a.Sequence.Evaluate()), 2);
+                }
+                catch (DivideByZeroException)
+                {
+                    return 100;
+                }
+            });
         }
 
         public Chromosome(int generation, string expression)
         {
             Generation = generation;
-            Sequence = new SimpleExpression(expression);
+            Sequence = new StringExpression(expression);
             Fitness = CalculateFitness(this);
         }
 
-        public Chromosome(int generation, SimpleExpression expression)
+        public Chromosome(int generation, StringExpression expression)
         {
             Generation = generation;
             Sequence = expression;
@@ -47,7 +56,7 @@ namespace GATest
             bool compareGen = this.Generation == compareObj.Generation;
             bool compareSeq = this.Sequence.Equals(compareObj.Sequence);
 
-            return (compareGen && compareSeq) ? true : false;
+            return compareGen && compareSeq;
         }
     }
 }

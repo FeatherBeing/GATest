@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace GATest
 {
-    public class SimpleExpression
+    public class StringExpression
     {
         private static char[] allowedNums = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
         private static char[] allowedOps = new char[] { '+', '-', '*', '/' };
         private static Dictionary<char, Func<double, double, double>> mathOperations;
         public readonly string Text;
 
-        static SimpleExpression()
+        static StringExpression()
         {
             mathOperations = new Dictionary<char,Func<double,double,double>>();
             mathOperations.Add('+', new Func<double, double, double>((a, b) => a + b));
@@ -22,7 +22,7 @@ namespace GATest
             mathOperations.Add('/', new Func<double, double, double>((a, b) => (a != 0 || b != 0) ? a / b : 0));
         }
 
-        public SimpleExpression(string expression)
+        public StringExpression(string expression)
         {
             // If all characters in the input string match valid mathematical expression characters then all is fine 
             if(expression.All(a => allowedNums.Concat(allowedOps).Any(b => a == b)))
@@ -31,11 +31,13 @@ namespace GATest
             }
             else
             {
-                throw new Exception(
-                    string.Format("Expression string contained illegal characters: {0}", 
-                        string.Join(", ",
-                            expression.Where(a => !char.IsDigit(a) && !IsOperator(a)
-                            ))));
+                // HACK; Generate empty expression
+                Text = "0 + 0";
+                //throw new Exception(
+                //    string.Format("Expression string contained illegal characters: {0}", 
+                //        string.Join(", ",
+                //            expression.Where(a => !char.IsDigit(a) && !IsOperator(a)
+                //            ))));
             }
         }
 
@@ -81,7 +83,7 @@ namespace GATest
             return sum;
         }
 
-        public static SimpleExpression Random(int exprLength, Random seed)
+        public static StringExpression Random(int exprLength, Random seed)
         {
             var sb = new StringBuilder();
 
@@ -99,7 +101,7 @@ namespace GATest
                 }
             }
 
-            return new SimpleExpression(sb.ToString());
+            return new StringExpression(sb.ToString());
         }
 
         public override string ToString()
@@ -108,7 +110,7 @@ namespace GATest
         }
         public override bool Equals(object obj)
         {
-            return Text.Equals(((SimpleExpression)obj).Text);
+            return Text.Equals(((StringExpression)obj).Text);
         }
     }
 }
